@@ -9,6 +9,9 @@ var RESULT_TEMPLATE = "";
 var LL = true;
 const LIMIT_LEMMATA = '<i class="fas fa-check"></i>&nbsp;Search only for lemmata';
 const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body';
+const NO_RESULTS = "<div class='text-center'><h1 class='text-center'>In all the time we spent searching for your query we came up empty handed...</h1>"
++ '<i class="far fa-frown fa-4x"></i>'
++ "<h4 class='text-center'>You might want to try a different query</h4></div>";
 
 /**Contains the spinner for when we're searching */
 const SPINNER = '<i class="fas fa-sync-alt fa-2x"></i>';
@@ -16,80 +19,97 @@ const SPINNER = '<i class="fas fa-sync-alt fa-2x"></i>';
 const SEARCH = '<i class="fas fa-search fa-2x"></i>';
 /**The last timestamp we've applied */
 var TIME_STAMP = 0;
+/**Number to see if we just pressed a key, we need 300ms of silence before we continue */
+var JUST_PRESSED = 0
 
 /**
  * Entry point for the code
  */
-$(document).ready(function(){
+$(document).ready(function () {
     //Prevent chacing for this website
-    $.ajaxSetup({cache:false});
+    $.ajaxSetup({ cache: false });
 
     //Load the result template
-    $.get('templates/result.html', function(data){
+    $.get('templates/result.html', function (data) {
         RESULT_TEMPLATE = data;
     });
 
     //Add the changelistener to the searchfield
-    $('#search').keyup(function(){
-        search($('#search').val(), $('#limitSelect').val());
+    $('#search').keyup(function () {
+        JUST_PRESSED++;
+        //Lower the value after 300 ms again, and check if we are ready to search
+        setTimeout(function(){JUST_PRESSED --; doSearch();}, 300);
     });
     //And do first search
-    search($('#search').val(), $('#limitSelect').val());
+    doSearch();
     //Also update limit when you search
-    $('#limitSelect').change(function(){
-        search($('#search').val(), $('#limitSelect').val());
+    $('#limitSelect').change(function () {
+        doSearch();
     });
 
     //Add the listener to the limitLemmatabutton
-    $('#limitLemmata').click(function(){
+    $('#limitLemmata').click(function () {
         //Toggle the button
         LL = !LL;
-        if(LL){
+        if (LL) {
             $(this).removeClass('btn-success').addClass('btn-warning').html(NO_LIMIT_LEMMATA);
-        }else{
+        } else {
             $(this).removeClass('btn-warning').addClass('btn-success').html(LIMIT_LEMMATA);
         }
     });
 });
 
 /**
+ * Handles the searching while inputing the correct data
+ */
+function doSearch(){
+    //Only if we didn't just press a key
+    if(JUST_PRESSED > 0) return;
+    search($('#search').val(), $('#limitSelect').val());
+}
+
+/**
  * Passes the query on to the server for processing
  * @param {String} query 
  */
-function search(query, limit){
+function search(query, limit) {
     //Start spinning the spinner
     $('#searchLogo').addClass('rotating').html(SPINNER);
     //If limit is not defined, use the global LIMIT
-    if(!limit) limit = LIMIT;
+    if (!limit) limit = LIMIT;
     //Make sure no illegal chracters are in there
     query = query.replace(/\s/g, '');
     //If query is no length, query an asterisk
-    if(query.length < 1) query = "*";
+    if (query.length < 1) query = "*";
     //Send the query to the server
-    $.get("search.php?q=" + query + "&m=" + limit, function(data){
-       let lines = data.split("\n");
-       let ts = lines.shift();
-       //Don't do anything with this data if we already applied a newer update
-       if(ts < TIME_STAMP) return;
-       //Else if we make it to here, we're applying this update, so update timestamp
-       TIME_STAMP = ts;
-       let results = [];
-       for(var i = 0; i < lines.length; i++){
-           let parts = lines[i].split("#");
-           //Ignore empty lines
-           if(parts.length < 4) continue;
-           //Add new result
-           results.push({
-                id: parts[0],
-                lemma: parts[2],
-                lemmaASCII: parts[1],
-                desc: parts[3]
-           });
-           //Now shows the results
-           showResults(results, query);
-           //And stop spinning
-           $('#searchLogo').removeClass('rotating').html(SEARCH);
-       };
+    $.get("search.php?q=" + query + "&m=" + limit, function (data) {
+        let lines = data.split("\n");
+        let ts = lines.shift();
+        //Don't do anything with this data if we already applied a newer update
+        if (ts < TIME_STAMP) return;
+        //Else if we make it to here, we're applying this update, so update timestamp
+        TIME_STAMP = ts;
+        if(lines.length > 1){
+            let results = [];
+            for (var i = 0; i < lines.length; i++) {
+                let parts = lines[i].split("#");
+                //Ignore empty lines
+                if (parts.length < 4) continue;
+                //Add new result
+                results.push({
+                    id: parts[0],
+                    lemma: parts[2],
+                    lemmaASCII: parts[1],
+                    desc: parts[3]
+                });
+                //Now shows the results
+                showResults(results, query);
+            };
+        }else{
+            $('#resultHolder').html(NO_RESULTS);
+        }
+        //And stop spinning
+        $('#searchLogo').removeClass('rotating').html(SEARCH);
     });
 }
 
@@ -98,10 +118,10 @@ function search(query, limit){
  * @param {Array} results 
  * @param {String} query the search query that we will highlight
  */
-function showResults(results, query){
+function showResults(results, query) {
     //Go through every result and add it to the div
     var lines = [];
-    $.each(results, function(index, result){
+    $.each(results, function (index, result) {
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
         rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
         rTemp = rTemp.replace(/%ID%/, result.id);
@@ -112,12 +132,12 @@ function showResults(results, query){
     $('#resultHolder').html(lines.join(''));
 
     //Add a copy listener to all id's
-    $('.badge').click(function(){
+    $('.badge').click(function () {
         copyTextToClipboard($(this).text());
         var backup = $(this).html();
         var self = this;
         $(this).html("Copied!");
-        setTimeout(function(){
+        setTimeout(function () {
             $(self).html(backup)
         }, 1000);
     });
@@ -128,11 +148,11 @@ function showResults(results, query){
  * @param {String} text 
  * @param {String} query 
  */
-function decorate(text, query){
+function decorate(text, query) {
     //First remove first two characters, if they are ', '
-    if(text.substr(0, 2) == ', ') text = text.substr(2);
+    if (text.substr(0, 2) == ', ') text = text.substr(2);
     //Empty query means nothing to highlight
-    if(query.length < 1 || query == "*") return text;
+    if (query.length < 1 || query == "*") return text;
     //Now perform the regex
     text = text.replace(new RegExp(query, 'gi'), "<span class='bg-info'>" + query + "</span>");
     return text;
@@ -143,13 +163,13 @@ function decorate(text, query){
  * dots when truncated
  * @param {String} text 
  */
-function truncate(text){
+function truncate(text) {
     //The dots used
     const dots = "...";
     //See if we're longer
-    if(text.length > 99){
+    if (text.length > 99) {
         return text.substring(0, 97) + dots;
-    }else{
+    } else {
         return text;
     }
 }
@@ -158,7 +178,7 @@ function truncate(text){
  * This function copies the provided text into your clipboard
  * @param {String} copyText 
  */
-function copyTextToClipboard(copyText){
+function copyTextToClipboard(copyText) {
     var textArea = document.createElement("textarea");
     textArea.style.position = 'fixed';
     textArea.style.top = 0;
@@ -176,12 +196,12 @@ function copyTextToClipboard(copyText){
     try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
-        if(msg != 'successful'){
-          copyText = "ERROR: UNABLE TO COPY";
-        }else{
-          copyText = 'Copied: ' + copyText;
+        if (msg != 'successful') {
+            copyText = "ERROR: UNABLE TO COPY";
+        } else {
+            copyText = 'Copied: ' + copyText;
         }
     } catch (err) {
     }
     document.body.removeChild(textArea);
-  }
+}

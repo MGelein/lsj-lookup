@@ -55,12 +55,6 @@ CUSTOM CLASSES
 /**
 ID's
 **/
-#resultHolder{
-    border-bottom: none;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    box-shadow: none;
-} 
 
 #settingsHolder{
     padding: 1em;
