@@ -25,6 +25,8 @@ if(!isset($_GET['l'])){
 
 //Get the query data from the GET url variable
 $query = $_GET['q'];
+//Echo the time as a stamp
+echo round((microtime(true) * 1000)) . "\n";
 
 //Read through the file using an iterator
 $handle = fopen('data/lsj-combined.cex', 'r');

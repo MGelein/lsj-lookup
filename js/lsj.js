@@ -14,6 +14,8 @@ const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete b
 const SPINNER = '<i class="fas fa-sync-alt fa-2x"></i>';
 /**Contains the search icon for when we're not searching */
 const SEARCH = '<i class="fas fa-search fa-2x"></i>';
+/**The last timestamp we've applied */
+var TIME_STAMP = 0;
 
 /**
  * Entry point for the code
@@ -66,6 +68,11 @@ function search(query, limit){
     //Send the query to the server
     $.get("search.php?q=" + query + "&m=" + limit, function(data){
        let lines = data.split("\n");
+       let ts = lines.shift();
+       //Don't do anything with this data if we already applied a newer update
+       if(ts < TIME_STAMP) return;
+       //Else if we make it to here, we're applying this update, so update timestamp
+       TIME_STAMP = ts;
        let results = [];
        for(var i = 0; i < lines.length; i++){
            let parts = lines[i].split("#");
