@@ -11,7 +11,6 @@ unicodeLines.forEach(function(line){
     let desc = parts[1].substr(lemma.length);
     table[parts[0]] = {
         unicodeLemma: lemma,
-        description: desc
     };
 });
 
@@ -32,4 +31,4 @@ keys.forEach(function(key){
     data.push([key, table[key].asciiLemma, table[key].unicodeLemma, table[key].description].join("#"));
 });
 //Join the data on a newline
-fs.writeFileSync("lsj-combined.cex", data.join("\n"));
+fs.writeFileSync("lsj-combined-lemmata.cex", data.join("\n"));

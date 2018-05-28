@@ -124,7 +124,7 @@ function showResults(results, query) {
     $.each(results, function (index, result) {
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
         rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
-        rTemp = rTemp.replace(/%ID%/, result.id);
+        rTemp = rTemp.replace(/%ID%/g, result.id);
         lines.push(rTemp);
     });
 
@@ -132,7 +132,7 @@ function showResults(results, query) {
     $('#resultHolder').html(lines.join(''));
 
     //Add a copy listener to all id's
-    $('.badge').click(function () {
+    $('.badge-info').click(function () {
         copyTextToClipboard($(this).text());
         var backup = $(this).html();
         var self = this;
