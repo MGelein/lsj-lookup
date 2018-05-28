@@ -10,10 +10,17 @@ if(!isset($_GET['q'])){
     exit();
 }
 /**Max amount of responses */
-if(!isset($_GET['l'])){
+if(!isset($_GET['m'])){
     $limit = 10;    
 }else{
-    $limit = $_GET['l'];
+    $limit = $_GET['m'];
+}
+
+/**Check if we need to limit to lemmata, by default true */
+if(!isset($_GET['l'])){
+    $lemmata = true;
+}else{
+    $lemmata = $_GET['l'] === 'true';
 }
 
 //Get the query data from the GET url variable
@@ -28,6 +35,7 @@ while(($line = fgets($handle)) !== false) {
     if(strpos(strtolower($line), strtolower($query)) !== FALSE || $query === '*'){
         echo $line;
         $counter ++;
+        //Stop reading if we have enough results
         if($counter >= $limit) break;
     }
 }

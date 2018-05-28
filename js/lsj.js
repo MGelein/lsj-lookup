@@ -8,7 +8,12 @@ var RESULT_TEMPLATE = "";
 //If we're currently limiting our results to only the lemmata
 var LL = true;
 const LIMIT_LEMMATA = '<i class="fas fa-check"></i>&nbsp;Search only for lemmata';
-const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body'
+const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body';
+
+/**Contains the spinner for when we're searching */
+const SPINNER = '<i class="fas fa-sync-alt fa-2x"></i>';
+/**Contains the search icon for when we're not searching */
+const SEARCH = '<i class="fas fa-search fa-2x"></i>';
 
 /**
  * Entry point for the code
@@ -50,6 +55,8 @@ $(document).ready(function(){
  * @param {String} query 
  */
 function search(query, limit){
+    //Start spinning the spinner
+    $('#searchLogo').addClass('rotating').html(SPINNER);
     //If limit is not defined, use the global LIMIT
     if(!limit) limit = LIMIT;
     //Make sure no illegal chracters are in there
@@ -57,7 +64,7 @@ function search(query, limit){
     //If query is no length, query an asterisk
     if(query.length < 1) query = "*";
     //Send the query to the server
-    $.get("search.php?q=" + query + "&l=" + limit, function(data){
+    $.get("search.php?q=" + query + "&m=" + limit, function(data){
        let lines = data.split("\n");
        let results = [];
        for(var i = 0; i < lines.length; i++){
@@ -72,22 +79,24 @@ function search(query, limit){
                 desc: parts[3]
            });
            //Now shows the results
-           showResults(results);
+           showResults(results, query);
+           //And stop spinning
+           $('#searchLogo').removeClass('rotating').html(SEARCH);
        };
-       console.log(results);
     });
 }
 
 /**
  * Shows the provided results array
  * @param {Array} results 
+ * @param {String} query the search query that we will highlight
  */
-function showResults(results){
+function showResults(results, query){
     //Go through every result and add it to the div
     var lines = [];
     $.each(results, function(index, result){
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
-        rTemp = rTemp.replace(/%DESC%/g, truncate(result.desc));
+        rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
         rTemp = rTemp.replace(/%ID%/, result.id);
         lines.push(rTemp);
     });
@@ -105,6 +114,21 @@ function showResults(results){
             $(self).html(backup)
         }, 1000);
     });
+}
+
+/**
+ * Used to highligh a strings occurences of the query
+ * @param {String} text 
+ * @param {String} query 
+ */
+function decorate(text, query){
+    //First remove first two characters, if they are ', '
+    if(text.substr(0, 2) == ', ') text = text.substr(2);
+    //Empty query means nothing to highlight
+    if(query.length < 1 || query == "*") return text;
+    //Now perform the regex
+    text = text.replace(new RegExp(query, 'gi'), "<span class='bg-info'>" + query + "</span>");
+    return text;
 }
 
 /**
