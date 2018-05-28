@@ -8,8 +8,10 @@ let table = {};
 unicodeLines.forEach(function(line){
     let parts = line.split("#");
     let lemma = parts[1].substring(0, parts[1].indexOf(",")).trim();
+    let desc = parts[1].substr(lemma.length);
     table[parts[0]] = {
         unicodeLemma: lemma,
+        description: desc
     };
 });
 
@@ -27,7 +29,7 @@ asciiLines.forEach(function(line){
 let data = []
 const keys = Object.keys(table);
 keys.forEach(function(key){
-    data.push([key, table[key].asciiLemma, table[key].unicodeLemma].join("#"));
+    data.push([key, table[key].asciiLemma, table[key].unicodeLemma, table[key].description].join("#"));
 });
 //Join the data on a newline
 fs.writeFileSync("lsj-combined.cex", data.join("\n"));
