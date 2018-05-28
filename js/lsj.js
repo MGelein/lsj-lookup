@@ -15,6 +15,13 @@ $(document).ready(function(){
     $.get('templates/result.html', function(data){
         RESULT_TEMPLATE = data;
     });
+
+    //Add the changelistener to the searchfield
+    $('#search').keyup(function(){
+        search($('#search').val());
+    });
+    //And do first search
+    search($('#search').val());
 });
 
 /**
@@ -26,6 +33,8 @@ function search(query, limit){
     if(!limit) limit = LIMIT;
     //Make sure no illegal chracters are in there
     query = query.replace(/\s/g, '');
+    //If query is no length, query an asterisk
+    if(query.length < 1) query = "*";
     //Send the query to the server
     $.get("search.php?q=" + query + "&l=" + limit, function(data){
        let lines = data.split("\n");
@@ -57,10 +66,27 @@ function showResults(results){
     var lines = [];
     $.each(results, function(index, result){
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
-        rTemp = rTemp.replace(/%DESC%/g, result.desc);
+        rTemp = rTemp.replace(/%DESC%/g, truncate(result.desc));
+        rTemp = rTemp.replace(/%ID%/, result.id);
         lines.push(rTemp);
     });
 
     //Now finally update the DOM
-    $('#resultHolder').html(lines.join());
+    $('#resultHolder').html(lines.join(''));
+}
+
+/**
+ * Limits this text to a length of 100 characters, showing
+ * dots when truncated
+ * @param {String} text 
+ */
+function truncate(text){
+    //The dots used
+    const dots = "...";
+    //See if we're longer
+    if(text.length > 99){
+        return text.substring(0, 97) + dots;
+    }else{
+        return text;
+    }
 }

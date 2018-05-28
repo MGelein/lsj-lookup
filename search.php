@@ -25,7 +25,7 @@ $counter = 0;
 //Read every line
 while(($line = fgets($handle)) !== false) {
     //Only echo back the ones we need
-    if(strpos(strtolower($line), strtolower($query)) !== FALSE){
+    if(strpos(strtolower($line), strtolower($query)) !== FALSE || $query === '*'){
         echo $line;
         $counter ++;
         if($counter >= $limit) break;
