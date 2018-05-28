@@ -19,8 +19,10 @@ const SPINNER = '<i class="fas fa-sync-alt fa-2x"></i>';
 const SEARCH = '<i class="fas fa-search fa-2x"></i>';
 /**The last timestamp we've applied */
 var TIME_STAMP = 0;
-/**Number to see if we just pressed a key, we need 300ms of silence before we continue */
+/**Number to see if we just pressed a key, we need 500ms of silence before we continue */
 var JUST_PRESSED = 0
+/**The previous search value, don;t update if it is still the same */
+var prevSearch = "";
 
 /**
  * Entry point for the code
@@ -36,9 +38,14 @@ $(document).ready(function () {
 
     //Add the changelistener to the searchfield
     $('#search').keyup(function () {
+        //Don't do a new search if the value is still the same
+        if(prevSearch == $(this).val()) return;
+
+        //If it isn't start to prepare for a new search
+        prevSearch = $(this).val();
         JUST_PRESSED++;
         //Lower the value after 300 ms again, and check if we are ready to search
-        setTimeout(function(){JUST_PRESSED --; doSearch();}, 300);
+        setTimeout(function(){JUST_PRESSED --; doSearch();}, 500);
     });
     //And do first search
     doSearch();
@@ -82,7 +89,7 @@ function search(query, limit) {
     //If query is no length, query an asterisk
     if (query.length < 1) query = "*";
     //Send the query to the server
-    $.get("search.php?q=" + query + "&m=" + limit, function (data) {
+    $.get("search.php?q=" + query + "&m=" + limit + "&l=" + LL, function (data) {
         let lines = data.split("\n");
         let ts = lines.shift();
         //Don't do anything with this data if we already applied a newer update
@@ -141,14 +148,36 @@ function showResults(results, query) {
             $(self).html(backup)
         }, 1000);
     });
+
+    /**If you think about clicking on show more, the stuff gets requested */
+    $('.showBtn').mouseover(function(){
+        request($(this).attr('href').replace('#', '').replace('Collapse', ''));
+        $(this).unbind('mouseover');
+    }).click(function(){
+        if($(this).text() == "Show more"){
+            $(this).html("Hide").removeClass('badge-secondary').addClass('badge-primary');
+        }else{
+            $(this).html("Show More").removeClass('badge-primary').addClass('badge-secondary');
+        }
+    });
+}
+
+/**
+ * Requests the entry with the provided ID
+ * @param {String} id 
+ */
+function request(id){
+    $.get('request.php?id=' + id, function(data){
+        $('#' + id + "Collapse .card-text").html(decorate(data.split('#')[3]));
+    });
 }
 
 /**
  * Used to highligh a strings occurences of the query
  * @param {String} text 
- * @param {String} query 
  */
-function decorate(text, query) {
+function decorate(text) {
+    let query = $('#search').val().trim();
     //Remove any special characters rom the query
     query = query.replace(/[^\w\s]/gi, '')
     //First remove first two characters, if they are ', '
