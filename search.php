@@ -3,34 +3,36 @@
  * This simple script will look for the provided search query and return the id's of the 
  * objects that match in their lemma
  */
-header('Content-type:application/json; charset=UTF-8');
+header('Content-type:text/plain; charset=UTF-8');
 //See if any query data is set
 if(!isset($_GET['q'])){
     echo "What are you doing here?";
     exit();
 }
+/**Max amount of responses */
+if(!isset($_GET['l'])){
+    $limit = 10;    
+}else{
+    $limit = $_GET['l'];
+}
 
 //Get the query data from the GET url variable
 $query = $_GET['q'];
 
-//Start of the JSON response
-echo '{';
-
 //Read through the file using an iterator
 $handle = fopen('data/lsj-combined.cex', 'r');
+$counter = 0;
 //Read every line
-echo '"ids":[';
 while(($line = fgets($handle)) !== false) {
     //Only echo back the ones we need
     if(strpos(strtolower($line), strtolower($query)) !== FALSE){
-        echo '"' . substr($line, 0, strpos($line, '#')) . '",';
+        echo $line;
+        $counter ++;
+        if($counter >= $limit) break;
     }
 }
-//Close the array
-echo '""]';
-
 //Close the file again
 fclose($handle);
 
-//End of JSON response
-echo '}';
+//Exit
+exit();
