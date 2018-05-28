@@ -13,7 +13,7 @@ body{
 /**
 BOOTSTRAP OVERRIDES
 **/
-.row{
+.row.main{
     border: 1px solid #ccc;
     border-radius: 1em;
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
@@ -22,9 +22,20 @@ BOOTSTRAP OVERRIDES
     background: rgba(255, 255, 255, 0.8);
 }
 
+.badge{
+    cursor: pointer;
+}
+
 /**
 CUSTOM CLASSES
 **/
+.lemma{
+    font-weight: 600;
+}
+
+.result{
+    padding-bottom: 0.5em;
+}
 
 /**
 ID's
@@ -34,4 +45,8 @@ ID's
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     box-shadow: none;
-}   
+} 
+
+#settingsHolder{
+    padding: 1em;
+}

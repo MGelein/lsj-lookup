@@ -4,6 +4,12 @@
 var LIMIT = 20;
 /**Contains the HTML for a single result entry */
 var RESULT_TEMPLATE = "";
+
+//If we're currently limiting our results to only the lemmata
+var LL = true;
+const LIMIT_LEMMATA = '<i class="fas fa-check"></i>&nbsp;Search only for lemmata';
+const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body'
+
 /**
  * Entry point for the code
  */
@@ -18,10 +24,25 @@ $(document).ready(function(){
 
     //Add the changelistener to the searchfield
     $('#search').keyup(function(){
-        search($('#search').val());
+        search($('#search').val(), $('#limitSelect').val());
     });
     //And do first search
-    search($('#search').val());
+    search($('#search').val(), $('#limitSelect').val());
+    //Also update limit when you search
+    $('#limitSelect').change(function(){
+        search($('#search').val(), $('#limitSelect').val());
+    });
+
+    //Add the listener to the limitLemmatabutton
+    $('#limitLemmata').click(function(){
+        //Toggle the button
+        LL = !LL;
+        if(LL){
+            $(this).removeClass('btn-success').addClass('btn-warning').html(NO_LIMIT_LEMMATA);
+        }else{
+            $(this).removeClass('btn-warning').addClass('btn-success').html(LIMIT_LEMMATA);
+        }
+    });
 });
 
 /**
@@ -73,6 +94,17 @@ function showResults(results){
 
     //Now finally update the DOM
     $('#resultHolder').html(lines.join(''));
+
+    //Add a copy listener to all id's
+    $('.badge').click(function(){
+        copyTextToClipboard($(this).text());
+        var backup = $(this).html();
+        var self = this;
+        $(this).html("Copied!");
+        setTimeout(function(){
+            $(self).html(backup)
+        }, 1000);
+    });
 }
 
 /**
@@ -90,3 +122,35 @@ function truncate(text){
         return text;
     }
 }
+
+/**
+ * This function copies the provided text into your clipboard
+ * @param {String} copyText 
+ */
+function copyTextToClipboard(copyText){
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = copyText.trim();
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        if(msg != 'successful'){
+          copyText = "ERROR: UNABLE TO COPY";
+        }else{
+          copyText = 'Copied: ' + copyText;
+        }
+    } catch (err) {
+    }
+    document.body.removeChild(textArea);
+  }

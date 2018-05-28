@@ -5,21 +5,56 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/style.css?v=23">
+	<link rel="stylesheet" href="css/style.css?v=13">
 	<title>LSJ Lookup</title>
 	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 </head>
 
 <body class="container">
 	<!-- Search field holder -->
-	<div class="row" id="searchHolder">
-		<div class="col-sm-12">
-			<input type="text" id="search" class="form-control form-control-lg text-center" placeholder="Type your query here...">
+	<div class="row main" id="searchHolder">
+		<div class="col-sm-1 text-center" style="padding: 0.5rem 1rem">
+			<i class="fas fa-search fa-2x"></i>
+		</div>
+		<div class="col-sm-8">
+			<input type="text" id="search" class="form-control form-control-lg" placeholder="Type here to look through the LSJ...">
+		</div>
+		<div class='col-sm-3'>
+			<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#settingsHolder">
+				<i class="fas fa-cogs"></i>&nbsp;Settings
+			</button>
+		</div>
+		<div class="collapse col-sm-12" id="settingsHolder">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="form-inline">
+								<label for="limitSelect">Max Results:&nbsp;</label>
+								<select class="form-control form-control" id="limitSelect">
+									<option value=5>5</option>
+									<option value=10>10</option>
+									<option value=20 selected="selected">20</option>
+									<option value=50>50</option>
+									<option value=100>100</option>
+								</select>&nbsp;
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<button type="button" id="limitLemmata" class="float-right btn btn-success">
+								<i class="fas fa-check"></i>&nbsp;Search only for lemmata
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
+
+
 	<!-- Display the results -->
-	<div class="row" id="resultHolder">
-		
+	<div class="row main" id="resultHolder">
+
 	</div>
 
 	<script src="js/lib/jquery-3.2.1.min.js"></script>
