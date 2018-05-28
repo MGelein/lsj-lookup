@@ -28,8 +28,11 @@ $query = $_GET['q'];
 //Echo the time as a stamp
 echo round((microtime(true) * 1000)) . "\n";
 
+/**Switch file depending on the provided parameter */
+$file = $lemmata ? 'data/lsj-combined-lemmata.cex' : 'data/lsj-combined.cex';
+
 //Read through the file using an iterator
-$handle = fopen('data/lsj-combined.cex', 'r');
+$handle = fopen($file, 'r');
 $counter = 0;
 //Read every line
 while(($line = fgets($handle)) !== false) {

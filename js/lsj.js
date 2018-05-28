@@ -149,6 +149,8 @@ function showResults(results, query) {
  * @param {String} query 
  */
 function decorate(text, query) {
+    //Remove any special characters rom the query
+    query = query.replace(/[^\w\s]/gi, '')
     //First remove first two characters, if they are ', '
     if (text.substr(0, 2) == ', ') text = text.substr(2);
     //Empty query means nothing to highlight
