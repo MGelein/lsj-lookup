@@ -36,7 +36,7 @@ function convertASCII(input){
  */
 function checkBreathing(input){
     //Nothing needs to be done if breathing is already found
-    if(input.indexOf('(') > -1 || input.indexOf(')') > -1){
+    if(input.indexOf('(') > -1 || input.indexOf(')') > -1 || input == '*'){
         //Hide the error message
         $('#searchLabel').hide();
         return input;
