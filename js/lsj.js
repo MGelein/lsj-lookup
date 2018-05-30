@@ -31,6 +31,9 @@ $(document).ready(function () {
     //Prevent chacing for this website
     $.ajaxSetup({ cache: false });
 
+    //Start to prepare the conversion data
+    initConversion();
+
     //Load the result template
     $.get('templates/result.html', function (data) {
         RESULT_TEMPLATE = data;
