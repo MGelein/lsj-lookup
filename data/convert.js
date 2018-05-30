@@ -20,6 +20,8 @@ const asciiLines = fs.readFileSync("lsj-ascii.cex", "utf-8").split("\n");
 asciiLines.forEach(function(line){
     let parts = line.split("#");
     let lemma = parts[1].substring(0, parts[1].indexOf(",")).trim();
+    //Remove any kind of accenting from the search key
+    lemma = lemma.replace('/', '').replace(String.fromCharCode(92), '').replace('=', '');
     table[parts[0]].asciiLemma = lemma;
 });
 
@@ -28,7 +30,7 @@ asciiLines.forEach(function(line){
 let data = []
 const keys = Object.keys(table);
 keys.forEach(function(key){
-    data.push([key, table[key].asciiLemma, table[key].unicodeLemma, table[key].description].join("#"));
+    data.push([table[key].asciiLemma, key].join("#"));
 });
 //Join the data on a newline
-fs.writeFileSync("lsj-combined-lemmata.cex", data.join("\n"));
+fs.writeFileSync("lsj-ascii-unaccented.cex", data.join("\n"));
