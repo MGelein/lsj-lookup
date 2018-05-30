@@ -89,8 +89,12 @@ function search(query, limit) {
     if (!limit) limit = LIMIT;
     //Make sure no illegal chracters are in there
     query = query.replace(/\s/g, '');
+    //Also remove any kind of accenting in the betatype, we don't want that
+    query = query.replace('/', '').replace(String.fromCharCode(92), '').replace('=', '');
     //If query is no length, query an asterisk
     if (query.length < 1) query = "*";
+    //Translate the query into ASCII
+    query = convertASCII(query);
     //Send the query to the server
     $.get("search.php?q=" + query + "&m=" + limit + "&l=" + LL, function (data) {
         let lines = data.split("\n");
