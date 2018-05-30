@@ -32,7 +32,6 @@ function convertASCII(input){
  * is found, spiritus lenis is assumed.
  * @param {String} input 
  */
-var lastChecked;
 function checkBreathing(input){
     //Nothing needs to be done if breathing is already found
     if(input.indexOf('(') > -1 || input.indexOf(')') > -1){
@@ -40,7 +39,6 @@ function checkBreathing(input){
         $('#searchLabel').hide();
         return input;
     }   
-    lastChecked = input;  
     //If it is not found, see if we need to add it
     //See if the first two characters are a diphtong
     if(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1){
