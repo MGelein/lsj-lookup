@@ -186,6 +186,7 @@ function allowCookies(allow){
     $('#cookieHolder').fadeOut();
 
     //Else we make the cookie
+    
 }
 
 /**
