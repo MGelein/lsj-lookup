@@ -182,6 +182,9 @@ function allowCookies(allow){
     //Nothing todo if we don't get permission for cookies
     if(!allow) return;
 
+    //First hide the cookieHolder
+    $('#cookieHolder').fadeOut();
+
     //Else we make the cookie
 }
 
