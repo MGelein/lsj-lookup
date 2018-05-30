@@ -28,16 +28,19 @@ $query = $_GET['q'];
 //Echo the time as a stamp
 echo round((microtime(true) * 1000)) . "\n";
 
-/**Switch file depending on the provided parameter */
-$file = $lemmata ? 'data/lsj-combined-lemmata.cex' : 'data/lsj-combined.cex';
+/**Switch file depending on the provided parameter.
+ * IGNORE FOR NOW, may add back later?
+*/
+$file = 'data/lsj-ascii-unaccented.cex';
 
 //Read through the file using an iterator
 $handle = fopen($file, 'r');
 $counter = 0;
+$qLen = strlen($query);
 //Read every line
 while(($line = fgets($handle)) !== false) {
     //Only echo back the ones we need
-    if(strpos(strtolower($line), strtolower($query)) !== FALSE || $query === '*'){
+    if(substr($line, 0, $qLen) == $query){
         echo $line;
         $counter ++;
         //Stop reading if we have enough results
