@@ -6,7 +6,6 @@ var LIMIT = 20;
 var RESULT_TEMPLATE = "";
 
 //If we're currently limiting our results to only the lemmata
-var LL = true;
 const LIMIT_LEMMATA = '<i class="fas fa-check"></i>&nbsp;Search only for lemmata';
 const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body';
 const NO_RESULTS = "<div class='text-center'><h1 class='text-center'>In all the time we spent searching for your query we came up empty handed...</h1>"
@@ -56,17 +55,6 @@ $(document).ready(function () {
     $('#limitSelect').change(function () {
         doSearch();
     });
-
-    //Add the listener to the limitLemmatabutton
-    $('#limitLemmata').click(function () {
-        //Toggle the button
-        LL = !LL;
-        if (LL) {
-            $(this).removeClass('btn-success').addClass('btn-warning').html(NO_LIMIT_LEMMATA);
-        } else {
-            $(this).removeClass('btn-warning').addClass('btn-success').html(LIMIT_LEMMATA);
-        }
-    });
 });
 
 /**
@@ -95,8 +83,9 @@ function search(query, limit) {
     if (query.length < 1) query = "*";
     //Translate the query into ASCII
     query = convertASCII(query);
+    let limitLemmata = $('#limitLemmata').attr('checked');
     //Send the query to the server
-    $.get("search.php?q=" + query + "&m=" + limit + "&l=" + LL, function (data) {
+    $.get("search.php?q=" + query + "&m=" + limit + "&l=" + (limitLemmata == 'true'), function (data) {
         let lines = data.split("\n");
         let ts = lines.shift();
         //Don't do anything with this data if we already applied a newer update
