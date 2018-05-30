@@ -32,6 +32,7 @@ function convertASCII(input){
  * is found, spiritus lenis is assumed.
  * @param {String} input 
  */
+var lastChecked;
 function checkBreathing(input){
     console.log("Checking: " + input);
     //Nothing needs to be done if breathing is already found
@@ -39,8 +40,10 @@ function checkBreathing(input){
         //Hide the error message
         $('#searchLabel').hide();
         return input;
-    }     
+    }   
+    lastChecked = input;  
     //If it is not found, see if we need to add it
+    console.log(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1, input);
     //See if the first two characters are a diphtong
     if(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1){
         //This is a dihptong (or at least we think so), add a breathing mark after it. 
@@ -92,7 +95,7 @@ function addConvEntry(line){
     let parts = line.split('#');
     //Split the keys and defs
     let keys = parts[0].split(' ');
-    let def = parts[1];
+    let def = parts[1].trim();
     keys.forEach(function(key){
         conversionTable[key] = def;
     });
