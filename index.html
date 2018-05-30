@@ -5,12 +5,25 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/style.css?v=23">
+	<link rel="stylesheet" href="css/style.css?v=13">
 	<title>LSJ Lookup</title>
 	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 </head>
 
 <body class="container">
+	<div class="row main" id="cookieHolder">
+		<div class="col-sm-12">
+			<img class="img float-right" id="cookie" src="css/cookie2.png">
+			<h1>Cookie Request</h1>
+			<p>This site, like basically any site on the internet, uses cookies for some extra functionality. The site is fully functional 
+				when you disable cookies, however you're settings and preferences cannot be saved. This may or may not be a problem to you.</p>
+			<p>
+				We <b>NEVER</b> store any personal data in a cookie except for your settings for this page.
+			</p>
+			<button onclick="allowCookies(true);" type="button" class="btn btn-primary">Allow Cookies</button>
+			<button onclick="allowCookies(false);" type="button" class="btn btn-secondary">Disable Cookies</button>
+		</div>
+	</div>
 	<!-- Search field holder -->
 	<div class="row main" id="searchHolder">
 		<div id='searchLogo' class="col-sm-1 text-center" style="padding: 0.5rem 1rem">
@@ -28,13 +41,13 @@
 		<div class="collapse col-sm-12" id="settingsHolder">
 			<div class="card">
 				<div class="card-body">
-					<table>
+					<table id="settingsTable">
 						<tr>
 							<td>
 								<label>Maximum results:&nbsp;</label>
 							</td>
 							<td>
-								<select class="form-control form-control" id="limitSelect">
+								<select class="form-control" id="limitSelect">
 									<option value=5>5</option>
 									<option value=10>10</option>
 									<option value=20>20</option>
@@ -42,7 +55,18 @@
 									<option value=50>50</option>
 									<option value=75>75</option>
 									<option value=100>100</option>
-								</select>&nbsp;
+								</select>
+							</td>
+							<td>
+								<label>Result columns:&nbsp;</label>
+							</td>
+							<td>
+								<select class="form-control" id="columnClass">
+									<option value="col-sm-12">1</option>
+									<option value="col-sm-6" selected="selected">2</option>
+									<option value="col-sm-4">3</option>
+									<option value="col-sm-3">4</option>
+								</select>
 							</td>
 						</tr>
 						<tr>
@@ -75,7 +99,7 @@
 	<script src="js/lib/jquery-3.2.1.min.js"></script>
 	<script src="js/lib/bootstrap.bundle.min.js"></script>
 	<script src="js/ascii.js"></script>
-	<script src="js/lsj.js"></script>
+	<script src="js/lsj.js?v=2"></script>
 </body>
 
 </html>

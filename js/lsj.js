@@ -5,6 +5,9 @@ var LIMIT = 20;
 /**Contains the HTML for a single result entry */
 var RESULT_TEMPLATE = "";
 
+/**By default disable cookies untill explicit consent has been given */
+var ALLOW_COOKIES = false;
+
 //If we're currently limiting our results to only the lemmata
 const LIMIT_LEMMATA = '<i class="fas fa-check"></i>&nbsp;Search only for lemmata';
 const NO_LIMIT_LEMMATA = '<i class="fas fa-times"></i>&nbsp;Search in complete body';
@@ -55,6 +58,11 @@ $(document).ready(function () {
     $('#limitSelect').change(function () {
         doSearch();
     });
+
+    //Now if you update the column thingy, the search is re-done
+    $('#columnClass').change(function(){
+        doSearch();
+    })
 });
 
 /**
@@ -125,7 +133,7 @@ function showResults(results, query) {
     var lines = [];
     $.each(results, function (index, result) {
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
-        //rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
+        rTemp = rTemp.replace('%CLASS%', $('#columnClass').val().trim( ));
         rTemp = rTemp.replace(/%ID%/g, result.id);
         lines.push(rTemp);
     });
@@ -163,6 +171,18 @@ function showResults(results, query) {
             $('.showBtn').mouseover().click();
         }
     }, 300);
+}
+
+/**
+ * Untill the user has given permission, we don't use any cookies,
+ * after that we do. 
+ */
+function allowCookies(allow){
+    ALLOW_COOKIES = allow;
+    //Nothing todo if we don't get permission for cookies
+    if(!allow) return;
+
+    //Else we make the cookie
 }
 
 /**
