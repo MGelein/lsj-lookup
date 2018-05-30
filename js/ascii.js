@@ -34,7 +34,6 @@ function convertASCII(input){
  */
 var lastChecked;
 function checkBreathing(input){
-    console.log("Checking: " + input);
     //Nothing needs to be done if breathing is already found
     if(input.indexOf('(') > -1 || input.indexOf(')') > -1){
         //Hide the error message
@@ -43,7 +42,6 @@ function checkBreathing(input){
     }   
     lastChecked = input;  
     //If it is not found, see if we need to add it
-    console.log(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1, input);
     //See if the first two characters are a diphtong
     if(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1){
         //This is a dihptong (or at least we think so), add a breathing mark after it. 
