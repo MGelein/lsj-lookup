@@ -10,6 +10,8 @@ var conversionTable = {};
  * @param {String} input 
  */
 function convertASCII(input){
+    //Make sure the input is lowercase
+    input = input.toLocaleLowerCase();
     //The output array, will be joined on return
     let output = [];
     //Split the input into characters
