@@ -108,13 +108,12 @@ function search(query, limit) {
             for (var i = 0; i < lines.length; i++) {
                 let parts = lines[i].split("#");
                 //Ignore empty lines
-                if (parts.length < 4) continue;
+                if (parts.length < 3) continue;
                 //Add new result
                 results.push({
-                    id: parts[0],
+                    id: parts[1],
                     lemma: parts[2],
-                    lemmaASCII: parts[1],
-                    desc: parts[3]
+                    lemmaASCII: parts[0],
                 });
                 //Now shows the results
                 showResults(results, query);
@@ -137,7 +136,7 @@ function showResults(results, query) {
     var lines = [];
     $.each(results, function (index, result) {
         let rTemp = RESULT_TEMPLATE.replace(/%LEMMA%/g, result.lemma);
-        rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
+        //rTemp = rTemp.replace(/%DESC%/g, decorate(result.desc, query));
         rTemp = rTemp.replace(/%ID%/g, result.id);
         lines.push(rTemp);
     });

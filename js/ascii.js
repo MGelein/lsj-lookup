@@ -21,8 +21,35 @@ function convertASCII(input){
         //Add the unconverted character if no entry was fuond
         output.push((conversionTable[char] ? conversionTable[char] : char));  
     });
+    //Check the ouput for breathing marks
+    output = checkBreathing(output.join(''));
     //Return the result
-    return output.join('');
+    return output;
+}
+
+/**
+ * Returns a breathing corrected version. If no breathing
+ * is found, spiritus lenis is assumed.
+ * @param {String} input 
+ */
+function checkBreathing(input){
+    //Nothing needs to be done if breathing is already found
+    if(input.indexOf('(') > -1 || input.indexOf(')') > -1) return input;
+    //If it is not found, see if we need to add it
+    //See if the first two characters are a diphtong
+    if(['ai', 'au', 'ei', 'eu'].indexOf(input.substr(0, 2)) > -1){
+        //This is a dihptong (or at least we think so), add a breathing mark after it. 
+        input = input.substr(0, 2) + ")" + input.substr(2);
+        return input;
+    }
+    //Here we can be sure it is at least not a diphtong, if the first character is a vowel, add it after that
+    if(['a', 'e', 'i' , 'o', 'u', 'h', 'w'].indexOf(input.charAt(0)) > -1){
+        input = input.substr(0, 1) + ")" + input.substr(1);
+        return input;
+    }else{
+        //This does not start with a vowel and thus needs no breathing mark
+        return input;
+    }    
 }
 
  /**
