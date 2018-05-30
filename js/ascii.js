@@ -10,6 +10,8 @@ var conversionTable = {};
  * @param {String} input 
  */
 function convertASCII(input){
+    //First turn it into NFC string, because NFD can break the system
+    input = input.normalize('NFC');
     //Make sure the input is lowercase
     input = input.toLocaleLowerCase();
     //The output array, will be joined on return
