@@ -33,6 +33,11 @@ $(document).ready(function () {
     //Prevent chacing for this website
     $.ajaxSetup({ cache: false });
 
+    //See if we acn hide the cookie warning
+    if(getCookie('allowed') != "true"){
+        $('#cookieHolder').show();
+    }
+
     //Start to prepare the conversion data
     initConversion();
 
@@ -186,7 +191,7 @@ function allowCookies(allow){
     $('#cookieHolder').fadeOut();
 
     //Else we make the cookie
-    
+    setCookie('allowed', 'true');
 }
 
 /**
