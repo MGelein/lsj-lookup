@@ -53,3 +53,9 @@ ID's
 #settingsHolder{
     padding: 1em;
 }
+
+#searchLabel{
+    margin-bottom: -2em;
+    padding-bottom: -2em;
+    padding-left: 2em;
+}
