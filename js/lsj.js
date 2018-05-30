@@ -166,6 +166,14 @@ function showResults(results, query) {
             $(this).html("Show More").removeClass('badge-primary').addClass('badge-secondary');
         }
     });
+
+    //Check if we only have one entry to show, if so show it after 300ms
+    setTimeout(function(){
+        //If there are less than 3 entries, show their full contents
+        if($('.showBtn').length < 3){
+            $('.showBtn').mouseover().click();
+        }
+    }, 300);
 }
 
 /**
