@@ -30,7 +30,7 @@ asciiLines.forEach(function(line){
 let data = []
 const keys = Object.keys(table);
 keys.forEach(function(key){
-    data.push([table[key].asciiLemma, key].join("#"));
+    data.push([table[key].asciiLemma, key, table[key].unicodeLemma].join("#"));
 });
 //Join the data on a newline
 fs.writeFileSync("lsj-ascii-unaccented.cex", data.join("\n"));
