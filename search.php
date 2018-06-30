@@ -40,7 +40,7 @@ $qLen = strlen($query);
 //Read every line
 while(($line = fgets($handle)) !== false) {
     //Only echo back the ones we need
-    if(substr($line, 0, $qLen) == $query){
+    if(substr($line, 0, $qLen) == $query || $query ==  '*'){
         echo $line;
         $counter ++;
         //Stop reading if we have enough results
